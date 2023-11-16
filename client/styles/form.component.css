@@ -1,0 +1,25 @@
+.wrapper__form {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    width: 100%;
+    background-color: rgba(60,106,215,0.98);
+    padding: 10px;
+}
+
+.wrapper__form input {
+    margin-top: 30px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #000;
+    font-size: 20px;
+}
+
+.wrapper__form button {
+    margin-top: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
