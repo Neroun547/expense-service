@@ -46,7 +46,7 @@ class SpendingController {
    async deleteSpendingItemById(id, user, res) {
        const spendingAndCategoryInDb = await this.spendingServiceDb.getSpendingAndCategoryById(id);
 
-       if(spendingAndCategoryInDb[0].user_id !== user.id) {
+       if(!spendingAndCategoryInDb.length || spendingAndCategoryInDb[0].user_id !== user.id) {
            res.writeHead(401);
            res.end();
 

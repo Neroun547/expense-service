@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Auth from "../components/Auth.vue";
 import Signup from "../components/Signup.vue";
 import Main from "../components/Main.vue";
-import EditCategory from "../components/EditCategory.vue";
+import EditCategory from "../components/category/EditCategory.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

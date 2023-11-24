@@ -1,6 +1,6 @@
 <template>
   <form class="wrapper__form m-auto mt-200" @submit="auth">
-    <input type="text" placeholder="Username" v-model="authForm.username">
+    <input type="text" placeholder="Username:" v-model="authForm.username">
     <input type="password" placeholder="Password:" v-model="authForm.password">
     <button>Auth</button>
   </form>

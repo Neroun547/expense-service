@@ -17,8 +17,8 @@
             <h3>Name: {{item.name}}</h3>
           </div>
           <div>
-            <h3 v-if="item.value">Total: {{item.value}}</h3>
-            <h3 v-if="!item.value">Total: 0</h3>
+            <h3 v-if="item.value">Total spending: {{item.value}}</h3>
+            <h3 v-if="!item.value">Total spending: 0</h3>
           </div>
           <div>
             <h3>Created at: {{item.created_at}}</h3>
