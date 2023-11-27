@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Auth from "../components/Auth.vue";
-import Signup from "../components/Signup.vue";
+import Auth from "../components/auth/Auth.vue";
+import Signup from "../components/signup/Signup.vue";
 import Main from "../components/Main.vue";
-import EditCategory from "../components/category/EditCategory.vue";
+import Category from "../components/category/Category.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,9 +23,9 @@ const router = createRouter({
       component: Main
     },
     {
-        path: "/category/edit-category/:id",
-        name: "edit-category",
-        component: EditCategory
+        path: "/category/:id",
+        name: "category",
+        component: Category
     }
   ]
 })

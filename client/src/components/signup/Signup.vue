@@ -6,7 +6,7 @@
   </form>
 </template>
 <script>
-  import "../../styles/form.component.css";
+  import "../../../styles/form.component.css";
 
   export default {
     data() {

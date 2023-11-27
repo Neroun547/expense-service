@@ -7,6 +7,9 @@
 
         <button @click="showEarningsPage" class="wrapper__nav-edit-category-btn-active" v-if="showEarningsPageState">Earnings</button>
         <button @click="showEarningsPage" class="wrapper__nav-edit-category-btn" v-if="!showEarningsPageState">Earnings</button>
+
+        <button class="wrapper__nav-edit-category-btn-active" @click="showProfitPage" v-if="showProfitPageState">Profit</button>
+        <button class="wrapper__nav-edit-category-btn" @click="showProfitPage" v-if="!showProfitPageState">Profit</button>
       </nav>
     </div>
 
@@ -90,6 +93,23 @@
         </div>
       </div>
     </div>
+
+    <div class="wrapper__profit-page" v-if="showProfitPageState">
+      <div class="wrapper__date">
+        <div>
+          <label for="date-from">Date from: </label>
+          <input type="date" id="date-from" v-model="svgDateFrom">
+        </div>
+        <div>
+          <label for="date-to">Date to: </label>
+          <input type="date" id="date-to" v-model="svgDateTo">
+        </div>
+      </div>
+      <div class="wrapper__total-sum">
+        <h2>Total: {{totalProfit}}</h2>
+      </div>
+    </div>
+
   </div>
 </template>
 <style scoped>
@@ -175,7 +195,7 @@
   .wrapper__nav-edit-category nav {
     display: flex;
     justify-content: space-between;
-    width: 15%;
+    width: 23%;
     margin-top: 50px;
   }
   .wrapper__nav-edit-category-btn {
@@ -210,7 +230,7 @@
 <script>
   import moment from "moment";
   import DrawSvgDiagram from "../DrawSvgDiagram.vue";
-  import { parseDataForSvg } from "../../common/common.js";
+  import { parseDataForSvg, calculateProfit } from "../../common/common.js";
 
   export default {
     components: {
@@ -232,9 +252,11 @@
         addEarningShowModalState: false,
         totalSpending: 0,
         totalEarnings: 0,
+        totalProfit: 0,
         spending: [],
         spendingDataForSvg: [],
         earningsDataForSvg: [],
+        profitDataForSvg: [],
         earnings: [],
         svgDateFrom: moment().subtract(7, "days").format("YYYY-MM-DD"),
         svgDateTo: moment().format("YYYY-MM-DD"),
@@ -243,7 +265,8 @@
         maxValueSpending: null,
         maxValueEarnings: null,
         showSpendingPageState: true,
-        showEarningsPageState: false
+        showEarningsPageState: false,
+        showProfitPageState: false
       }
     },
     watch: {
@@ -309,22 +332,34 @@
         const indexEl = this.spending.findIndex(el => el.id === id);
         this.spending[indexEl].showInfo = !this.spending[indexEl].showInfo;
       },
+      async showProfitPage() {
+        this.showSpendingPageState = false;
+        this.showEarningsPageState = false;
+        this.showProfitPageState = true;
+
+        await this.getDataForSvg();
+      },
       async showEarningsPage() {
+        this.showProfitPageState = false;
         this.showSpendingPageState = false;
         this.showEarningsPageState = true;
 
         await this.getDataForSvg();
       },
       async showSpendingPage() {
+        this.showProfitPageState = false;
         this.showEarningsPageState = false;
         this.showSpendingPageState = true;
 
         await this.getDataForSvg();
       },
       async getDataForSvg() {
+        this.spendingDataForSvg = [];
+        this.earningsDataForSvg = [];
+        this.profitDataForSvg = [];
+
         this.earnings = (await this.axios.get("/earnings/by-category-id/" + this.$route.params.id + "/?date_from=" + this.svgDateFrom + "&date_to=" + this.svgDateTo)).data;
 
-        this.spendingDataForSvg = [];
         this.spending = (await this.axios.get("/spending/by-category-id/" + this.$route.params.id + "/?date_from=" + this.svgDateFrom + "&date_to=" + this.svgDateTo)).data;
 
         this.totalSpending = 0;
@@ -338,7 +373,8 @@
           this.spendingDataForSvg = dataForSvg;
           this.maxValueSpending = maxValue;
           this.totalSpending = totalSum;
-        } else {
+        }
+        if(this.showEarningsPageState) {
           const { countIntervalForSvgLine, intervalForSvgLine, dataForSvg, maxValue, totalSum } = parseDataForSvg(this.earnings);
 
           this.countIntervalForSvgLine = countIntervalForSvgLine;
@@ -346,6 +382,21 @@
           this.earningsDataForSvg = dataForSvg;
           this.maxValueEarnings = maxValue;
           this.totalEarnings = totalSum;
+        }
+        if(this.showProfitPageState) {
+          // TODO
+          /*
+          this.earnings = (await this.axios.get("/earnings/by-category-id/" + this.$route.params.id + "/?date_from=" + this.svgDateFrom + "&date_to=" + this.svgDateTo)).data;
+          this.spending = (await this.axios.get("/spending/by-category-id/" + this.$route.params.id + "/?date_from=" + this.svgDateFrom + "&date_to=" + this.svgDateTo)).data;
+
+          const earningsDataForSvg = parseDataForSvg(this.earnings);
+          const spendingDataForSvg = parseDataForSvg(this.spending);
+
+          this.profitDataForSvg = calculateProfit([...earningsDataForSvg.dataForSvg], [...spendingDataForSvg.dataForSvg], earningsDataForSvg.maxValue);
+
+          console.log(this.profitDataForSvg)
+
+           */
         }
       },
     },

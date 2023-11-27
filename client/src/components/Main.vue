@@ -25,7 +25,7 @@
           </div>
           <div class="wrapper__main-categories-item-wrapper-btn">
             <button class="wrapper__main-categories-item-delete-btn" @click="deleteCategoryById(item.id)">Delete</button>
-            <RouterLink :to="'/category/edit-category/' + item.id">
+            <RouterLink :to="'/category/' + item.id">
               <button class="wrapper__main-categories-item-edit-btn">Edit</button>
             </RouterLink>
           </div>

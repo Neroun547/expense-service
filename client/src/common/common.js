@@ -1,5 +1,21 @@
 import moment from "moment";
 
+function dateInInterval(dateStart, dateEnd, date) {
+    return moment(date).isAfter(dateStart) && moment(date).isBefore(dateEnd);
+}
+
+function calculateProfit(earnings, spending, greaterValueEarnings) {
+    for(let i = 0; i < earnings.length; i++) {
+        for(let j = 0; j < spending.length; j++) {
+            if(i + 1 < earnings.length && dateInInterval(earnings[i].dateStart, earnings[i + 1].dateStart, spending[j].dateStart)) {
+                earnings[i].value -= spending[j].value;
+                earnings[i].valueInPercent = earnings[i].value / greaterValueEarnings * 100
+            }
+        }
+    }
+    return earnings;
+}
+
 function parseDataForSvg(arr) {
     let sortedSpendingArr = arr.sort((a, b) => moment(a.date).isAfter(moment(b.date)));
     let totalSum = 0;
@@ -89,4 +105,4 @@ function parseDataForSvg(arr) {
     return { countIntervalForSvgLine, intervalForSvgLine, dataForSvg, maxValue, totalSum };
 }
 
-export { parseDataForSvg };
+export { parseDataForSvg, calculateProfit };
