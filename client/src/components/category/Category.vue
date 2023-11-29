@@ -1,5 +1,10 @@
 <template>
   <div class="wrapper__main">
+    <div class="wrapper__category-settings-button">
+      <RouterLink :to="'/category/settings/' + this.$route.params.id">
+        <button class="category-settings-button">Category settings</button>
+      </RouterLink>
+    </div>
     <div class="wrapper__nav-edit-category">
       <nav>
         <button @click="showSpendingPage" class="wrapper__nav-edit-category-btn-active" v-if="showSpendingPageState">Spending</button>
@@ -86,10 +91,20 @@
       <button @click="addEarningShowModal" v-if="!addEarningShowModalState" class="add-spend-btn">Add earning</button>
 
       <div class="wrapper__main-spending mt-100 mb-100">
-        <div class="wrapper__main-spending-item" v-for="item in earnings">
-          <h3>Sum: {{item.value}}</h3>
-          <h3>Created at: {{item.date}}</h3>
-          <button @click="deleteEarningsById(item.id)" class="wrapper__main-spending-item-del-btn">Delete</button>
+        <div v-for="item in earnings">
+          <div class="wrapper__main-spending-item">
+            <h3>Sum: {{item.value}}</h3>
+            <h3>Created at: {{item.date}}</h3>
+            <button @click="deleteEarningsById(item.id)" class="wrapper__main-spending-item-del-btn" v-if="!item.description">Delete</button>
+
+            <div class="wrapper__main-spending-item-buttons" v-if="item.description">
+              <button class="wrapper__main-spending-item-show-desc-btn" @click="showEarningItemInfo(item.id)">Show info</button>
+              <button @click="deleteEarningsById(item.id)" class="wrapper__main-spending-item-del-btn">Delete</button>
+            </div>
+          </div>
+          <div v-if="item.showInfo && item.description" class="wrapper__main-spending-item-description">
+            <strong>{{item.description}}</strong>
+          </div>
         </div>
       </div>
     </div>
@@ -226,6 +241,24 @@
   .wrapper__main-spending-item-description strong {
     padding-left: 15px;
   }
+  .wrapper__category-settings-button {
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+  }
+  .wrapper__category-settings-button a {
+    text-decoration: none;
+  }
+  .category-settings-button {
+    display: block;
+    background-color: rgba(60,106,215,0.98);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: #fff;
+    margin-top: 25px;
+    cursor: pointer;
+  }
 </style>
 <script>
   import moment from "moment";
@@ -332,6 +365,10 @@
         const indexEl = this.spending.findIndex(el => el.id === id);
         this.spending[indexEl].showInfo = !this.spending[indexEl].showInfo;
       },
+      showEarningItemInfo(id) {
+        const indexEl = this.earnings.findIndex(el => el.id === id);
+        this.earnings[indexEl].showInfo = !this.earnings[indexEl].showInfo;
+      },
       async showProfitPage() {
         this.showSpendingPageState = false;
         this.showEarningsPageState = false;
@@ -384,6 +421,10 @@
           this.totalEarnings = totalSum;
         }
         if(this.showProfitPageState) {
+          this.totalEarnings = this.earnings.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0);
+          this.totalSpending = this.spending.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0);
+
+          this.totalProfit = this.totalEarnings - this.totalSpending;
           // TODO
           /*
           this.earnings = (await this.axios.get("/earnings/by-category-id/" + this.$route.params.id + "/?date_from=" + this.svgDateFrom + "&date_to=" + this.svgDateTo)).data;

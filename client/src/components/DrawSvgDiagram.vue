@@ -81,7 +81,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .rect-color {
     fill: #3C6AD7E3;
   }
