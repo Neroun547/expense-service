@@ -16,6 +16,12 @@ class CategoriesServiceDb {
     async getCategoriesByIdAndUserId(id, userId) {
         return (await this.connection.execute("SELECT * FROM categories WHERE id = ? AND user_id = ?", [id, userId]))[0];
     }
+    async changeCategoryNameByIdAndUserId(id, userId, name) {
+        await this.connection.execute("UPDATE categories SET name = ? WHERE user_id = ? AND id = ?", [name, userId, id]);
+    }
+    async getCategoriesByNameAndUserId(name, userId) {
+        return (await this.connection.execute("SELECT * FROM categories WHERE name = ? AND user_id = ?", [name, userId]))[0];
+    }
 }
 
 module.exports = { CategoriesServiceDb };

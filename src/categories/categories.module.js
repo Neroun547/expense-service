@@ -6,6 +6,7 @@ const { connect } = require("../../db/db.connect.js");
 
 const { createCategoryDto } = require("./dto/create-category.dto.js");
 const { deleteCategoryDto } = require("./dto/delete-category.dto.js");
+const { newCategoryNameDto } = require("./dto/new-category-name.dto.js");
 
 const commonService = new CommonService();
 
@@ -18,6 +19,14 @@ async function categoriesModule(req, res) {
                 const user = await commonService.checkAuthToken(req);
 
                 categoriesController.getCategories(user, res);
+
+                return;
+            }
+            if(req.url.includes("/api/categories/")) {
+                const user = await commonService.checkAuthToken(req);
+                const categoryId = Number(req.url.replace("/api/categories/", ""));
+
+                categoriesController.getCategoryById(categoryId, user, res);
 
                 return;
             }
@@ -37,6 +46,17 @@ async function categoriesModule(req, res) {
                 const user = await commonService.checkAuthToken(req);
 
                 categoriesController.deleteCategoryById(deleteCategoryDto(Number(req.url.replace("/api/categories/", ""))), user, res);
+
+                return;
+            }
+        }
+        if(req.method === "PATCH") {
+            if(req.url.includes("/api/categories/")) {
+                const user = await commonService.checkAuthToken(req);
+                const data = await commonService.getDataFromRequest(req);
+                const id = Number(req.url.replace("/api/categories/", ""));
+
+                categoriesController.changeCategoryNameById(id, user, newCategoryNameDto(data.name), res);
 
                 return;
             }
